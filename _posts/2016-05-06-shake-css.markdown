@@ -1,0 +1,35 @@
+---
+layout:     post
+title:      "CSS库:csshake"
+subtitle:   "如此魔性的前端CSS库"
+date:       2016-05-06
+author:     "diggzhang"
+header-img: "img/in-post/post-css-shake/shakecsshomepage.png"
+tags:
+    - css
+    - 前端技术
+---
+
+> hackernews
+
+[Csshake](https://github.com/elrumordelaluz/csshake)是一款魔性的CSS库，可以让DOM元素shake起来。有意思的是，这个库是纯CSS实现的。类似效果的库还有一个名为[jrumble](https://jackrugile.com/jrumble/)，基于jQuery实现。
+
+用法非常简单，只要为需要抖动的元素添加一个class就可以看到效果。
+
+```html
+
+<link rel="stylesheet" type="text/css" href="csshake.css">`
+
+<div class="shake"></div>
+<div class="shake shake-hard"></div>
+<div class="shake shake-slow"></div>
+<div class="shake shake-little"></div>
+<div class="shake shake-horizontal"></div>
+<div class="shake shake.vertical"></div>
+<div class="shake shake-rotate"></div>
+<div class="shake shake-opacity"></div>
+<div class="shake shake-crazy"></div>
+
+```
+
+作者的实现代码不过100多行(基于SCSS)，大概原理是利用了CSS的`transform`，然后按百分比渐变调整元素，从而产生了动效。

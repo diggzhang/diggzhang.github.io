@@ -1,0 +1,68 @@
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.bootcss.com/echarts/3.6.2/echarts.js"></script>
+</head>
+
+<h2>Skills Radar (Weekly Update)</h2>
+
+<div id="main" style="width: 800px;height:400px;align-content: center"></div>
+
+<script type="text/javascript">
+
+    var myChart = echarts.init(document.getElementById('main'));
+
+    option = {
+        title: {
+//            text: '技能雷达图'
+        },
+        tooltip: {},
+        legend: {
+            data: ['预计掌握（Allocated）', '实际掌握（Actual）']
+        },
+        radar: {
+            indicator: [
+                { name: '蛋炒饭', max: 1000},
+                { name: 'SQL', max: 1000},
+                { name: 'Python', max: 1000},
+                { name: 'Scala', max: 1000},
+                { name: 'Git', max: 1000},
+                { name: 'Shell Script', max: 1000},
+                { name: 'Node.js', max: 1000},
+                { name: 'HTML5/CSS3', max: 1000},
+                { name: 'MongoDB', max: 1000},
+                { name: 'Linux Server', max: 1000},
+                { name: 'Java', max: 1000},
+                { name: 'akka.io', max: 1000},
+                { name: 'Superset', max: 1000},
+                { name: 'PostgreSQL', max: 1000},
+                { name: 'ArchLinux', max: 1000},
+                { name: 'C', max: 1000},
+                { name: 'Hive', max: 1000},
+                { name: 'React', max: 1000},
+                { name: 'g2', max: 1000},
+                { name: 'Airflow', max: 1000},
+                { name: 'Docker', max: 1000},
+                { name: 'golang', max: 1000},
+                { name: 'pandas', max: 1000},
+                { name: 'scikitlearn', max: 1000},
+            ]
+        },
+        series: [{
+            // name: '预算 vs 开销（Budget vs spending）',
+            type: 'radar',
+            data : [
+                {
+                    value : [800, 700, 780, 350, 300, 590, 700, 200, 700, 700, 700, 500, 600, 300, 500, 400, 500, 200, 200, 300, 300, 300, 100, 100],
+                    name : '预计掌握（Allocated）'
+                },
+                {
+                    value : [500, 300, 350, 110, 150, 120, 300, 100, 450, 450, 400, 200, 320, 200, 140, 150, 235, 150, 200, 250, 200, 110, 100, 100],
+                    name : '实际掌握（Actual）'
+                }
+            ]
+        }]
+    };
+
+    myChart.setOption(option);
+
+</script>

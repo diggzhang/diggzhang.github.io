@@ -1,0 +1,21 @@
+# Site settings
+title: Diggzhang 掘客张
+name: diggzhang # your name
+email: diggzhang@example.com # your email address
+description: >
+    blog. # this means to ignore newlines until "baseurl:"
+#baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://diggzhang.github.io" # the base hostname & protocol for your site
+twitter_username: diggzhang # your Twitter username
+github_username: diggzhang # your Github username
+#disqus_username: itisbenjamin # your disqus username
+
+#google-analytics: UA-75034651-1 # add it if you have one
+
+skillstree: true # turn on or off the skills tree in about page
+
+# Build settings
+permalink: none
+markdown: kramdown
+kramdown:
+  input: GFM                            # use Github Flavored Markdown !important

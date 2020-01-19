@@ -1,0 +1,127 @@
+---
+layout:     post
+title:      "如何搭建以太坊私有链"
+subtitle:   "写这篇时候比特币跌了75%"
+date:       2018-11-30
+author:     "diggzhang"
+category: "以太坊"
+tags:
+    - Ethereum
+---
+
+近期一直在折腾以太坊，把玩一下整个工具链后发现搭建一个私有链还是蛮简单的。
+
+## 自建私有链 
+
+目前找到的最快跑起来私有链的办法是基于`docker-compose`，参考博文是[Building private Ethereum networks with Docker Compose](https://capgemini.github.io/blockchain/ethereum-docker-compose/)
+
+直接使用该项目可以快速备好docker-compose组织的以太坊容器：
+
+```
+git clone https://github.com/Capgemini-AIE/ethereum-docker.git
+cd ethereum-docker
+```
+
+这里以双节点为例， 启动容器后默认有两个以太坊节点工作：
+
+```
+docker-compose up -d
+```
+
+启动完成后访问[http://localhost:3000](http://localhost:3000)可以看到以太坊私有链集群概况。
+
+如果需要扩展节点执行`docker-compose scale eth=3`。
+
+这里只是让你的私有链快速跑起来，更多私有链相关问题还是需要参考[官方WIKI](https://github.com/ethereum/go-ethereum/wiki/Private-network)。
+
+
+## 创建钱包
+
+私有链启动后，默认是没有以太坊账户且没有进入挖矿状态的。想登入到私有链需要用到`geth`工具：
+
+
+```
+$ geth attach http://localhost:8545
+```
+
+登入后，创建账户：
+
+```
+> personal.newAccount()
+Passphrase:
+Repeat passphrase:
+"0x980a6d903fa437612961071b4185561e9879ebf8" #注意这里产生的是账户地址
+```
+
+创建后的账户还处于加锁状态，需要做解锁：
+
+```
+> personal.unlockAccount("0x980a6d903fa437612961071b4185561e9879ebf8")
+```
+
+这里所说的账户，其实就是钱包地址，来，我们愉快的看一下钱包里有多少钱：
+
+```
+## 这样做是因为最新创建的账户id是账户列表总长度减去1
+> eth.getBalance(eth.accounts[eth.accounts.length - 1])
+0 #hmmmm，空着
+```
+
+每个以太坊的第一个账户就是`CoinBase`:
+
+```
+> eth.coinbase
+```
+
+这里有很多管理操作的API参考地址是[Management APIs](https://github.com/ethereum/go-ethereum/wiki/Management-APIs#personal_unlockaccount)。
+
+
+## 挖矿
+
+
+默认情况下的`miner`包是没加载进去的，需要在启动geth的时候手工指定一下：
+
+
+```
+$ docker exec -it bootstrap geth --datadir=~/.ethereum/devchain --mine attach
+```
+
+挖矿前，确定正确设置了`CoinBase`，挖矿产生的以太坊币就入这个钱包了：
+
+```
+> eth.accounts[0]
+"0x980a6d903fa437612961071b4185561e9879ebf8"
+> miner.setEtherbase(eth.accounts[0])
+true
+> eth.coinbase
+"0x980a6d903fa437612961071b4185561e9879ebf8
+
+> miner.setEtherbase(eth.coinbase)
+true
+```
+
+以太坊内启动/停止挖矿：
+
+```
+> miner.start(2)
+null
+> miner.stop()
+null
+```
+
+在持续挖矿过程中，可以在[http://localhost:3000](http://localhost:3000)看到块高度一直在增加。看看挖出多少以太币吧：
+
+```
+web3.fromWei(eth.getBalance(eth.accounts[0]),'ether') 
+
+# 也可以通过命令行方式查看当前块高度
+> eth.blockNumber
+192
+```
+
+## 导入metamask
+
+将私有链创建好的钱包导入到`metamask`有坑，导入前先备份一下你的钱包。其办法也就是以JSON文件方式导入，参考[这里](https://metamask.zendesk.com/hc/en-us/articles/360015489351-Importing-Accounts)。
+
+我们所要做的就是把 `ethereum-docker/files/keystore/` 目录下的 `UTC--2018-11-16T12-32-17.612134681Z--980a6d903fa437612961071b4185561e9879ebf8`
+是一个json文件，在metamask中用json方式导入。

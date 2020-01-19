@@ -1,0 +1,75 @@
+---
+layout:     post
+title:      "Kraken.js入门"
+subtitle:   "Kraken.js是PayPal基于express.js开源的node框架"
+date:       2016-05-13
+author:     "diggzhang"
+header-img: "img/in-post/post-krakenjs/kraken.png"
+tags:
+    - node
+    - kraken.js
+---
+
+Kraken.js是PayPal基于express.js开源的node框架。更方便的特性是，还独立提供了`Lusca/Kappa/Makara/Adaro`四大组件，用于处理程序的安全性、项目依赖管理、国际化支持、前端模板。
+
+其实用过就感觉到了，kraken将express变得更加规范了，非常适合项目开发。
+
+快速上手，体验一把。
+
+### Step.0 Node环境准备
+
+首先默认系统中已经安装好了Node并且npm可用。kraken借用`yo`制作了一个`generator`工具，就好比`express-generator`，先安装基础依赖:
+
+```
+➜  mkdir kraken && cd ./kraken
+➜  kraken cnpm install -g yo generator-kraken bower grunt-cli
+```
+
+从安装generator这一步看出，kraken用yo作为项目初始化工具，用grunt做任务管理，用bower做前端包管理。注意如果npm使用参数`-g`的话，全局安装可能需提供sudo。
+
+### Step.1 开始项目
+
+初始化项目好简单，`yo kraken`就可以，就是这么爽，依赖都帮你下载好，分分钟搞定。
+
+```
+➜  kraken  yo kraken
+
+     ,'""`.
+hh  / _  _ \
+    |(@)(@)|   Release the Kraken!
+    )  __  (
+   /,'))((`.\
+  (( ((  )) ))
+   `\ `)(' /'
+
+Tell me a bit about your application:
+
+? Name helloK
+? Description test kraken
+? Author diggzhang
+? Template library? Dust (via Makara 2)
+? Include i18n support? Yes
+? Front end package manager ? Bower
+? CSS preprocessor library? SASS
+? JavaScript library? RequireJS
+......
+```
+
+### Step.2 启动Kraken
+
+上述结束后，就可以启动kraken项目了:
+
+```
+➜  cd helloK
+➜  helloK  npm start
+
+> hellok@0.1.0 start /Users/diggzhang/code/codeforfun/kraken/helloK
+> node server.js
+
+Server listening on http://localhost:8000
+Application ready to serve requests.
+Environment: development
+
+```
+
+打开浏览器进入`localhost:8000`如果见到`Hello, index!`就说明服务成功启动。

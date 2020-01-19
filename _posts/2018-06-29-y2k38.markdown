@@ -1,0 +1,40 @@
+---
+layout:     post
+title:      "现代黑魔法和2038问题"
+subtitle:   "寻找问题的边界"
+date:       2018-06-29
+author:     "diggzhang"
+
+---
+
+赶在六月底，这一年的中间位置，解决了一个有趣的现代魔法漏洞问题。
+这是最爽的一次debug过程。
+
+
+发现iOS设备有`10%`设备抓取的unixtimestamp都是`2147483647`。
+
+这个值非常有意思，转换成二进制是`1111111111111111111111111111111`，是32位元操作系统中最大的符号型整型常量。
+
+由于牵扯到前端到数仓多个环节，所以绕了不少弯路，每个环节都有可能发生精度转换，所以只好逐层排查。
+
+经过一轮排查后发现：
+
+1. iOS约10%的埋点存在此问题 (只有iOS存在该问题)
+2. 错误埋点并不集中于`iOS`某个功能
+
+缩减问题范围后，开始猜想是`iOS`端的问题。然后遍历各个维度发现错误的`10%`有一个共同特征就是设备型号都是偏旧或偏低端的设备类型。
+
+
+|No|Brand/Type|count|CPU|bit|
+|:--:|:--:|:--:|:--:|:--:|
+|1|iPad 4(WiFi)|112838|Apple A6X|32-bit|
+|2|iPad2,5 iPad|81840|Apple A5|32-bit|
+
+
+参考几篇博文后，基本确定是`32-bit`架构问题肯能会导致`NSDate`取值出问题。
+
+- [gettimeofday取毫秒的溢出问题
+](https://wuzhiwei.net/one_overflow_issue/)
+- [NSDate, NSCalendar and NSDateComponents timing](https://stackoverflow.com/questions/5634067/nsdate-nscalendar-and-nsdatecomponents-timing)
+- [iOS时间回归bug](https://weibo.com/ttarticle/p/show?id=2309403942046627940126)
+
