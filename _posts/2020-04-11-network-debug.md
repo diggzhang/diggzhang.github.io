@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "网络稳定问题debug流传"
+title:      "网络稳定问题debug流程"
 subtitle:   "慢慢刨坑"
 date:       2020-04-11
 author:     "diggzhang"
