@@ -72,7 +72,7 @@ tags:
 
 Airflow从架构上也很好的解决了任务管理和自身鲁棒性:
 
-<img src={{site.baseurl}}"/img/in-post/airflow/AirflowArch.png" alt="explain_airflow_arch">
+<img src={{site.baseurl}}"img/in-post/airflow/AirflowArch.png" alt="explain_airflow_arch">
 
 最底层数据库负责存储各个任务元数据，以及任务状态。
 
