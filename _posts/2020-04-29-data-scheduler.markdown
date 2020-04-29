@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "关于任务调度"
+title:      "关于数据链路的任务调度"
 subtitle:   "做好数据调度，做好流程控制，就是做好数据"
 date:       2020-04-29
 author:     "diggzhang"
