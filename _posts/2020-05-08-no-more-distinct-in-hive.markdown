@@ -20,3 +20,5 @@ SELECT DISTINCT u_user AS id FROM metrics
 SELECT u_user as id FROM metrics
 GROUP BY u_user
 ```
+
+以往操作数据时候没有太信SQL distinct 优化这套，确实在发生数据倾斜时候用这个办法更快更好，更符合MAPREDUCE思想。
