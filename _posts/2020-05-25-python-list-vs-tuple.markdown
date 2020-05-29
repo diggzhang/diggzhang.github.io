@@ -74,3 +74,17 @@ TypeError: 'tuple' object does not support item assignment
 
 所以在运行效率上，同等数据量级，列表肯定相对于元组效率更高一点，因为不用频繁开辟新的内存区域。
 在使用安全性上，元组的不可变特性肯定更合适，因为列表都是浅拷贝的，Python都基于引用传递，使用不当可能会导致变量污染。
+
+这里还可以扩展一下，一个不可变的对象还可以用作为Dict中的Key:
+
+```python
+>>> this_string = "helloworld"
+>>> this_tuple = (1, 2, 3)
+>>> thie_list = [1, 2, 3]
+>>> {this_tuple: this_string}
+{(1, 2, 3): 'helloworld'}
+>>> {this_list: this_string}
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'this_list' is not defined
+```
