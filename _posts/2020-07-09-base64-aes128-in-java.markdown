@@ -1,0 +1,113 @@
+---
+layout:     post
+title:      "Java中如何实现AES+Base64加解密"
+subtitle:   "一扯到加密，工作就高级了起来"
+date:       2020-07-09
+author:     "diggzhang"
+tags:
+    - Java
+---
+
+## 问题
+
+人人都说Java好，要学Java得趁早。
+我年近三十才痛悟要学Java，希望能有所得。
+
+因为一些原因，我们需要在客户端到服务端的消息体中针对某个字段加密。
+
+这里有一个[AES Encryption and Decryption Online Tool(Calculator)](https://www.devglan.com/online-tools/aes-encryption-decryption)。
+
+折腾了一番终于搞定。有一个坑是需要将密文中的`-`和`_`替换一下才能正常解密：
+
+```java
+    return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt.replace('-', '+').replace('_', '/'))));
+```
+
+## 解答
+
+
+Base64+AES解密类：
+
+```java
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+public class AES {
+
+    private static SecretKeySpec secretKey;
+    private static byte[] key;
+
+    public static void setKey(String myKey)
+    {
+        MessageDigest sha = null;
+        try {
+            key = myKey.getBytes("UTF-8");
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String encrypt(String strToEncrypt, String secret)
+    {
+        try
+        {
+            setKey(secret);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while encrypting: " + e.toString());
+        }
+        return null;
+    }
+
+    public static String decrypt(String strToDecrypt, String secret)
+    {
+        try
+        {
+            setKey(secret);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt.replace('-', '+').replace('_', '/'))));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while decrypting: " + e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+
+```
+
+如何用起来：
+
+
+```scala
+import helpers.AES
+
+object AesTest {
+  def main(args: Array[String]): Unit = {
+
+    val secretKey = "1234567890123456"
+    val originalString = "52da75d04e948704"
+    val encryptedString = "A5qtKZ3nJRRgMS2Yc2oVYppNJTIDuJfra6lBf_pQIpY"
+
+    val decryptedString: String = AES.decrypt(encryptedString, secretKey)
+
+    println(originalString)
+    println(decryptedString)
+
+  }
+}
+```
