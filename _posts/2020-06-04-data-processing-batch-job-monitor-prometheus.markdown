@@ -92,6 +92,29 @@ groups:
 这里的`time()`函数代表当前最新时间，用最新时间减去任务交付时间就是一个间隔值，间隔值是每次任务交付之间的间隔时间。
 就是通过这个间隔时间形成了监控指标的依据。
 
+
+但是上面的规则判断依然是写死了一个间隔周期`1000`，一个批处理任务可能受到各种因素影响导致在任务执行正常情况，交付时间相对比平时晚一点。
+如果写死报警周期，会导致无效报警产生。
+这个时候最好的报警规则是，取一个相对值，用相对值作为报警触发周期。
+实现是稍微复杂，但基本思路不变，
+原来写死的`1000`替换为一个表达式`abs(topk(...))`该表达式就是获取过去三天的平均值，并允许15分钟波动。
+
+具体方法如下：
+
+
+```
+(time() - batchjob_success{exported_job="dim_topic.sh",instance="pushgateway:9091",job="push_pushgateway"}) 
+> 
+abs(
+  (time() - 86400 * 3) - 
+    (
+      topk(1, 
+        avg_over_time(batchjob_success{exported_job="dim_topic.sh",instance="pushgateway:9091",job="push_pushgateway"}[3d])
+      )
+    )
+) * 1.01
+```
+
 为了读者使用方便，我将演示代码和配置贴到了github，希望对您有用：
 
 [https://github.com/diggzhang/prometheus_batch_job_alert](https://github.com/diggzhang/prometheus_batch_job_alert)
