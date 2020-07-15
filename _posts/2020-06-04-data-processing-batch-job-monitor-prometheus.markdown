@@ -102,7 +102,7 @@ groups:
 具体方法如下：
 
 
-```
+```scala
 (time() - batchjob_success{exported_job="dim_topic.sh",instance="pushgateway:9091",job="push_pushgateway"}) 
 > 
 abs(
