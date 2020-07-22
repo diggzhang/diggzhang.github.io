@@ -435,3 +435,9 @@ systemctl restart keepalived
 这个操作的含义就是模拟了从节点keepalive暂时挂掉，让VIP漂移回了主节点。
 
 至此，大功告成。
+
+
+我在搞这个事情时候遇到一些理解上的问题，如感兴趣，且来围观：
+
+- [《MySQL 库处于完全只读模式该如何设置？》](https://www.v2ex.com/t/692005)
+- [read_lock not work when session close](https://www.reddit.com/r/mysql/comments/hv4x13/read_lock_not_work_when_session_close/)
