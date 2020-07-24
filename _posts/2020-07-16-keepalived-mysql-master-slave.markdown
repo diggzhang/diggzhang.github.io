@@ -434,6 +434,8 @@ systemctl restart keepalived
 
 这个操作的含义就是模拟了从节点keepalive暂时挂掉，让VIP漂移回了主节点。
 
+在做从节点数据无法写入测试的时候，不要用`test`或`test_`前缀的库。
+
 至此，大功告成。
 
 
