@@ -63,7 +63,7 @@ select * from tmp.productRevenue;
 
 针对第一个问题，我们需要做一个在品类维度下以价格为序的查询，并且从排序中找出销售头一头二的商品。下面的sql查询就是用到了滑动窗口函数`dense_rank`（后面将介绍这种滑动窗口的语法是什么意思）。
 
-```
+```sql
 SELECT
   product,
   category,
@@ -185,13 +185,13 @@ Spark SQL已支持三类窗口函数：排序函数，分析函数，和聚合�
 
 在SQL中，`PARTITION BY`和`ORDER BY`关键字是分别用于分区字段定义的表达式和排序字段定义的表达式。SQL语法如下所示：
 
-```
- OVER (PARTITION BY ... ORDER BY ...) 
+```sql
+OVER (PARTITION BY ... ORDER BY ...) 
 ```
  
 在DataFrame API中，提供了工具函数去做“窗口定义”。在下面的Python示例中，示范了分区表达式和排序表达式的用法：
 
-```
+```python
 from pyspark.sql.window import Window
 windowSpec = \
   Window \
@@ -230,7 +230,7 @@ windowSpec = \
 
 总结一下，用户可以通过如下的SQL语法去定义个要计算的窗口，完成一次“开窗”：
 
-```
+```sql
 OVER (PARTITION BY ... ORDER BY ... frame_type BETWEEN start AND end) 
 ```
 
@@ -242,7 +242,7 @@ OVER (PARTITION BY ... ORDER BY ... frame_type BETWEEN start AND end)
 
 用Python的DataFrame API的话，用户可以用如下方式完成一次“开窗定义”：
 
-```
+```python
 from pyspark.sql.window import Window
 # Defines partitioning specification and ordering specification.
 windowSpec = \
