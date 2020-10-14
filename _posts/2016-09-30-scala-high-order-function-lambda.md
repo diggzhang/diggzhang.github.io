@@ -125,3 +125,4 @@ higher
 
 [Scala High Order Functions](https://www.scala-exercises.org/std_lib/higher_order_functions)
 
+[guru99](https://www.guru99.com/scala-tutorial.html)
