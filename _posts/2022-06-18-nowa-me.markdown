@@ -2,7 +2,7 @@
 layout:     post
 title:      "有关于近期的生活，近期的我"
 subtitle:   "麻了"
-date:       2022-06-19
+date:       2022-06-18
 author:     "diggzhang"
 tags:
     - life
