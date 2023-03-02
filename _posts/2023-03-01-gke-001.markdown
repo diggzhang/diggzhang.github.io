@@ -1,0 +1,59 @@
+---
+layout:     post
+title:      "开始折腾GKE"
+subtitle:   ""
+date:       2023-03-01
+author:     "diggzhang"
+tags:
+    - GKE
+    - k8s
+    - GCP
+
+---
+
+当在GKE集群中部署应用时，可能会遇到Pod调度失败的问题，在我尝试跟着引导教程启动一个集群时候，报错发生了：
+
+```
+0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+```
+
+可以看到有3个节点无法分配该Pod，初步检索回答都说原因是节点上的CPU资源不足。
+
+我试图使用命令kubectl获取该Pod的详细信息，查看该Pod所在的Node。然后再获取该Node的详细信息，查看该Node的CPU使用情况。
+
+```
+kubectl describe pod <pod-name> 
+#kubectl describe node <node-name> 
+```
+
+但是却发现，Pod的状态是Pending并且Node列中显示为none，这意味着调度程序无法将Pod调度到任何节点。这可能是由于可用的节点资源不足，或者可能是由于Kubernetes集群无法自动扩容以满足请求。看describe输出的Events中有稍微更详细的提示：
+
+
+```
+Events:
+  Type     Reason             Age                    From                Message
+  ----     ------             ----                   ----                -------
+  Normal   NotTriggerScaleUp  3m47s (x512 over 89m)  cluster-autoscaler  pod didn't trigger scale-up:
+  Warning  FailedScheduling   3m43s (x18 over 89m)   default-scheduler   0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+```
+
+
+问题基本定位，我需要看看如何再GKE下做节电池扩容。手动操作路径是：
+
+
+1. 登录 Google Cloud Console，选择目标 GKE 集群。
+2. 在左侧导航栏中选择“节点池”。
+3. 找到要扩容的节点池，并单击它旁边的“编辑”按钮。
+4. 在“大小”下拉列表中选择所需的节点数量。
+
+通过命令行完成节点扩容方式是在Web console下执行：
+
+```
+gcloud container clusters resize CLUSTER_NAME --node-pool POOL_NAME --size NEW_SIZE --region REGION
+```
+
+- `CLUSTER_NAME` 为 GKE 集群的名称。
+- `POOL_NAME` 为要扩容的节点池的名称。
+- `NEW_SIZE` 为扩容后节点池的大小。
+- `REGION` 为 GKE 集群所在的区域。
+
