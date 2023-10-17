@@ -124,5 +124,3 @@ higher
 [scala雾中风景(1): lambda表达式的缩写](http://hongjiang.info/scala-pitfalls-1/)
 
 [Scala High Order Functions](https://www.scala-exercises.org/std_lib/higher_order_functions)
-
-[guru99](https://www.guru99.com/scala-tutorial.html)
