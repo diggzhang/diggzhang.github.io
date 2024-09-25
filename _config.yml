@@ -11,7 +11,8 @@ permalink: /:slug.html
 favicon: "logo.png" # name+extension of favicon (which must be put on the root folder)
 # goat_counter: "yoursitename" # put your GoatCounter name if you want to use GoatCounter analytics
 
-theme: no-style-please # if you are using GitHub Pages, change it to remote_theme: riggraz/no-style-please
+# theme: no-style-please # if you are using GitHub Pages, change it to remote_theme: riggraz/no-style-please
+remote_theme: riggraz/no-style-please
 
 theme_config:
   appearance: "dark" # can be "light", "dark" or "auto"
@@ -27,4 +28,4 @@ plugins:
   - jekyll-seo-tag
 
 # theme: no-style-please
-remote_theme: riggraz/no-style-please
+# remote_theme: riggraz/no-style-please
