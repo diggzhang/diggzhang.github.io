@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "kramdown-parser-gfm"
-gem 'jekyll', '3.9.5'
+gem 'jekyll', '3.9.3'
 gem 'webrick'
 gem 'jekyll-feed', '0.15.1'
 gem 'jekyll-seo-tag', '2.7.1'
