@@ -8,6 +8,8 @@ entries:
       - title: github repo
         url: https://github.com/diggzhang
       - title: "我在这里，写下一堆怕忘记的东西。"
+      - title: 总计有 <span id="busuanzi_value_site_pv"></span> 次点击以及 <span id="busuanzi_value_site_uv"></span> 个访客。
+
 
   - title: 全部文档
     post_list:
