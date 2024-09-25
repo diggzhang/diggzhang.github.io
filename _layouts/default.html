@@ -1,34 +1,23 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      
-  {% include head.html %}
+<html lang="{{ page.lang | default: 'en' }}">
 
-  {% if site.google-analytics %}
-  {% include google-analytics.html %}
-  {% endif %}
-
-  {% if page.url == "/404.html" %}
-  <meta http-equiv="refresh" content="10; url={{ site.baseurl }}">
-  {% endif %}
-
-  </head>
-
-  <body>
-
-  {% include header.html %}
-
-  <div class="wrapper">
+  {%- include head.html -%}
+  <body a="{{ site.theme_config.appearance | default: 'auto' }}">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
         {{ content }}
-  </div>
+      </div>
+    </main>
 
-</body>
+    {%- if site.goat_counter and jekyll.environment == "production" -%}
+      {%- include goat_counter.html -%}
+    {%- endif -%}
 
-<foot>
+    {% if page.custom_js %}
+      {% for js_file in page.custom_js %}
+        <script type="text/javascript" src="{{ site.baseurl }}/assets/js/{{ js_file }}.js"></script>
+      {% endfor %}
+    {% endif %}
 
-    {% include footer.html %}
-    {% include foot.html %}
-
-</foot>
-
+  </body>
 </html>

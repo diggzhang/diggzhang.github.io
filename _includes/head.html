@@ -1,32 +1,23 @@
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- CSS -->
+  <title>
+    {%- if page.title -%}
+      {{ page.title }}
+    {%- else -%}
+      {{ site.title }}
+    {%- endif -%}
+  </title>
 
-  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="stylesheet" href="//unpkg.com/heti/umd/heti.min.css">
+  {%-seo title=false-%}
+  {%-feed_meta-%}
 
-<!-- Google font -->
-
-  <!--<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noto Sans">-->
-
-<!-- font awesome -->
-
-<link rel="stylesheet" href="http://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?21df57bf3664c538cc382d75a73c01d8";
-    var s = document.getElementsByTagName("script")[0]; 
-    s.parentNode.insertBefore(hm, s);
-  })();
-</script>
-
+  <link rel="shortcut icon" type="image/x-icon" href="{{ site.favicon | relative_url }}" />
+  <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css" integrity="sha512-0aPQyyeZrWj9sCA46UlmWgKOP0mUipLQ6OZXu8l4IcAmD2u31EPEy9VcIMvl7SoAaKe8bLXZhYoMaE/in+gcgA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js" integrity="sha512-6yoqbrcLAHDWAdQmiRlHG4+m0g/CT/V9AGyxabG8j7Jk8j3r3K6due7oqpiRMZqcYe9WM2gPcaNNxnl2ux+3tA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
 
 </head>

@@ -1,0 +1,29 @@
+# For documentation on this file, see:
+# https://github.com/riggraz/no-style-please#customize-the-menu
+
+entries:
+  - title: 关于这里
+    entries:
+      - title: 又一个不怎么更新的博客 :)
+      - title: github repo
+        url: https://github.com/diggzhang
+      - title: "我在这里，写下一堆怕忘记的东西。"
+
+  - title: 全部文档
+    post_list:
+      limit: 10
+      show_more: true
+      show_more_text: 看看还有哪些文档...
+      show_more_url: archive.html
+
+  - title: RSS订阅
+    url: feed.xml
+  
+  - title: 关于我
+    entries:
+      - title: 联系方式
+        entries:
+          - title: diggzhang[at]gmail.com
+      - title: 最近喜欢什么
+        entries:
+          - title: BRZ/荒野行动
