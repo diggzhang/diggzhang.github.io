@@ -26,4 +26,5 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-theme: no-style-please
+# theme: no-style-please
+remote_theme: riggraz/no-style-please
