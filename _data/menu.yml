@@ -15,7 +15,7 @@ entries:
     post_list:
       limit: 10
       show_more: true
-      show_more_text: 看看还有哪些文档...
+      show_more_text: <b>看看还有哪些文档...</b>
       show_more_url: archive.html
 
   - title: RSS订阅
