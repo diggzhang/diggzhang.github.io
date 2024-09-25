@@ -2,8 +2,8 @@
 
 source "https://rubygems.org"
 
+gem "no-style-please"
 gem "kramdown-parser-gfm"
-gem 'jekyll', '3.9.3'
 gem 'webrick'
 gem 'jekyll-feed', '0.15.1'
 gem 'jekyll-seo-tag', '2.7.1'
