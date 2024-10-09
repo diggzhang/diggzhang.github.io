@@ -4,7 +4,7 @@ email: diggzhang+blog@gmail.com # email of site's author
 url: https://yangcongchufang.com # root address of the site
 baseurl: "" # subpath of the site, e.g. "/blog" (leave it blank "" if you're site shouldn't use a subpath)
 description: > # description of the site (multiple lines allowed)
-  又一个不怎么更新的博客。
+  又一个不怎么更新的博客，纯面向自己写作 :)
 
 permalink: /:slug.html
 
