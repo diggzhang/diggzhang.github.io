@@ -170,11 +170,12 @@ if __name__ == '__main__':
 ```
 
 **md.html**（显示 Markdown 文件内容）：
+
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ filename }}</title>
+    <title>\{\{ filename \}\}</title>
     <style>
         body { max-width: 800px; margin: 20px auto; padding: 20px; }
         pre { background: #f6f8fa; padding: 15px; border-radius: 5px; }
@@ -185,9 +186,9 @@ if __name__ == '__main__':
     </style>
 </head>
 <body>
-    <a href="{{ url_for('index') }}">← 返回列表</a>
+    <a href="\{\{ url_for('index') \}\}">← 返回列表</a>
     <div class="markdown-content">
-        {{ content|safe }}
+        \{\{ content|safe \}\}
     </div>
 </body>
 </html>
