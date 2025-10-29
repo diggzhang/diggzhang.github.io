@@ -1,0 +1,62 @@
+---
+layout:     post
+title:      "把玩crAPI"
+subtitle:   ""
+date:       2025-10-29
+author:     ""
+tags:
+
+---
+
+Github从来不缺好玩的，最近在研究API攻防，注意到了`crAPI`。全称是“​​完全脆弱的API​​”。正如其名，它是一个被故意设计得千疮百孔的API交互站。
+
+[crAPI](https://github.com/OWASP/crAPI)
+
+```
+cd cd crAPI-main/deploy/docker
+docker compose -f docker-compose.yml --compatibility up -d
+```
+
+项目内设置的挑战之一是这样的：
+
+```
+Challenge 1 - Access details of another user’s vehicle
+To solve the challenge, you need to leak sensitive information of another user’s vehicle.
+
+Since vehicle IDs are not sequential numbers, but GUIDs, you need to find a way to expose the vehicle ID of another user.
+
+Find an API endpoint that receives a vehicle ID and returns information about it.
+```
+
+解法倒是蛮简单，可以通过观察发现不同API直接有关联性，进而找到泄露点：
+
+```
+Challenge 1 - Access details of another user’s vehicle
+
+Detailed solution
+
+1. Login to the application from http://localhost:8888/login
+2. From the Dashboard, choose Add a Vehicle and add the vehicle by providing the VIN and pincode received in Mailhog mailbox after Signup or by reinitiating from Dashboard page.
+After the vehicle details are verified successful, the vehicle will get added and then be populated in the Dashboard page.
+4. Observe the request sent when we click Refresh Location. It can be seen that the endpoint is in the format /identity/api/v2/vehicle/<vehicleid>/location.
+5. Sensitive information like latitude and longitude are provided back in the response for the endpoint. Send the request to Repeater for later purpose.
+6. Click Community in the navbar to visit http://localhost:8888/forum
+7. It can be observed that the forum posts are populated based on the response from /community/api/v2/community/posts/recent endpoint. On further analysing the response, it can be seen that vehicleid is also received back corresponding to the author of each post.
+8. Edit the vehicleid in the request sent to Repeater in Step 5 with the vehicleid received from endpoint /community/api/v2/community/posts/recent.
+9. Upon sending the request, sensitive details like latitude, longitude and full name are received in the response.
+
+The above challenge was completed using Burp Suite Community Edition.
+```
+
+在折腾过程中，踩到的坑是：使用Docker启动，默认监听的地址是`127.0.0.1`，这个地址看起来是如此正常，却与`Burp Suite`工具水土不服，BS默认不截获来自localhost的流量。
+
+最终发现，最简单的办法是设置:
+
+```
+ sudo sh -c 'echo "127.0.0.1 crapi.local" >> /etc/hosts'
+```
+
+通过访问伪域名`crapi.local`，便能截获API请求了。
+
+当然这些都不足够有趣，有趣的是我发现有一个印度Youtuber `Medusa`用crAPI录制了一系列教学视频。
+嚯，第一次觉得印度姑娘有魅力。
