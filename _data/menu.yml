@@ -13,7 +13,7 @@ entries:
 
   - title: 全部文档
     post_list:
-      limit: 10
+      limit: 16
       show_more: true
       show_more_text: <b>看看还有哪些文档...</b>
       show_more_url: archive.html
@@ -28,4 +28,4 @@ entries:
           - title: diggzhang[at]gmail.com
       - title: 最近喜欢什么
         entries:
-          - title: BRZ/荒野行动
+          - title: BRZ/Albion Online
