@@ -1,21 +1,21 @@
 ---
 layout: default
-title: Page not Found
+title: 404
 permalink: /404.html
 ---
 
-<style>
-
-.index-content {
-	margin-top: 30%;
-	margin-bottom: 30%;
-	font-size: 18px;
-}
-
-</style>
-
-<center>
-	<h1>404 :(</h1>
-	<p class="index-content">Page not Found</p>
-</center>
-
+<div class="terminal-404" role="main">
+  <p class="t-prompt"><span class="prompt" aria-hidden="true">$</span> curl {{ site.url }}{{ page.url | remove: "404.html" }}&lt;missing-page&gt;</p>
+  <p class="t-output t-error">&lt; HTTP/1.1 404 Not Found</p>
+  <p class="t-output">&lt; Content-Length: 0</p>
+  <p class="t-blank"></p>
+  <p class="t-prompt"><span class="prompt" aria-hidden="true">$</span> echo $?</p>
+  <p class="t-output">1</p>
+  <p class="t-blank"></p>
+  <p class="t-prompt"><span class="prompt" aria-hidden="true">$</span> ls ~/</p>
+  <p class="t-output"><a href="{{ site.baseurl }}/">index/</a></p>
+  <p class="t-output"><a href="{{ site.baseurl }}/archive/">archive/</a></p>
+  <p class="t-output"><a href="{{ site.baseurl }}/about/">about.md</a></p>
+  <p class="t-blank"></p>
+  <p class="t-prompt"><span class="prompt" aria-hidden="true">$</span> <span class="cursor-blink" aria-hidden="true"></span></p>
+</div>

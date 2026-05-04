@@ -1,7 +1,22 @@
+<!--
+  ┌─ view-source ──────────────────────────────────────┐
+  │                                                    │
+  │   hello, curious developer :]                      │
+  │                                                    │
+  │   #!/usr/bin/env jekyll                            │
+  │   author : diggzhang                              │
+  │   site   : {{ site.url }}                         │
+  │                                                    │
+  │   $ echo "写下一堆怕忘记的东西"                    │
+  │     > 写下一堆怕忘记的东西                         │
+  │                                                    │
+  └────────────────────────────────────────────────────┘
+-->
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
 
   <title>
     {%- if page.title -%}
@@ -16,11 +31,29 @@
 
   <link rel="shortcut icon" type="image/x-icon" href="{{ site.favicon | relative_url }}" />
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css" integrity="sha512-0aPQyyeZrWj9sCA46UlmWgKOP0mUipLQ6OZXu8l4IcAmD2u31EPEy9VcIMvl7SoAaKe8bLXZhYoMaE/in+gcgA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js" integrity="sha512-6yoqbrcLAHDWAdQmiRlHG4+m0g/CT/V9AGyxabG8j7Jk8j3r3K6due7oqpiRMZqcYe9WM2gPcaNNxnl2ux+3tA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Syntax highlighting: light/dark via media query -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css"
+        integrity="sha512-0aPQyyeZrWj9sCA46UlmWgKOP0mUipLQ6OZXu8l4IcAmD2u31EPEy9VcIMvl7SoAaKe8bLXZhYoMaE/in+gcgA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        media="(prefers-color-scheme: light)" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark-dimmed.min.css"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        media="(prefers-color-scheme: dark)" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"
+          integrity="sha512-6yoqbrcLAHDWAdQmiRlHG4+m0g/CT/V9AGyxabG8j7Jk8j3r3K6due7oqpiRMZqcYe9WM2gPcaNNxnl2ux+3tA=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script>hljs.highlightAll();</script>
-  <!-- Hit analytics -->
+
+  <!-- Page view analytics -->
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
+  <!-- Easter eggs -->
+  <script src="{{ '/assets/js/easter-egg.js' | relative_url }}" defer></script>
 
 </head>

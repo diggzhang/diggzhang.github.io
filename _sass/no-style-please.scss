@@ -1,94 +1,411 @@
-// -------------- THEME SWITCHER -------------- //
-@mixin dark-appearance {
-  filter: invert(1);
-  img {
-    filter: invert(1);
+// ============================================================
+// diggzhang.github.io — minimal redesign
+// warm ink-on-paper palette · CSS custom properties dark mode
+// ============================================================
 
-    &.ioda { filter: invert(0); }
+// ── Design tokens ────────────────────────────────────────────
+:root {
+  --bg:      #fafaf8;
+  --fg:      #1c1917;
+  --muted:   #78716c;
+  --accent:  #c0392b;
+  --dim:     rgba(192, 57, 43, 0.06);
+  --code-bg: #f5f4f2;
+  --border:  #e8e6e4;
+  --font:    -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+             "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+             "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  --mono:    "SF Mono", "Fira Code", "Cascadia Code", Menlo,
+             "Courier New", monospace;
+}
+
+// Dark mode via CSS custom properties (replaces filter: invert)
+@media (prefers-color-scheme: dark) {
+  body[a="auto"] {
+    --bg:      #16140f;
+    --fg:      #e8e4de;
+    --muted:   #9c9490;
+    --accent:  #e07060;
+    --dim:     rgba(224, 112, 96, 0.10);
+    --code-bg: #1d1b16;
+    --border:  #2c2a26;
   }
 }
 
-body[a="dark"] { @include dark-appearance; }
-
-
-@media (prefers-color-scheme: dark) {
-  body[a="auto"] { @include dark-appearance; }
+body[a="dark"] {
+  --bg:      #16140f;
+  --fg:      #e8e4de;
+  --muted:   #9c9490;
+  --accent:  #e07060;
+  --dim:     rgba(224, 112, 96, 0.10);
+  --code-bg: #1d1b16;
+  --border:  #2c2a26;
 }
-// -------------------------------------------- //
 
-// bg color is also needed in html in order to
-// block body's background propagation
-// see: https://stackoverflow.com/a/61265706
-html, body { background: white; }
+// ── Reset ────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
 
-html { height: 100%; }
+html {
+  background: var(--bg);
+  height: 100%;
+}
 
 body {
-  color: black;
-  font-family: monospace;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.75;
   margin: 0;
   min-height: 100%;
   overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.2s, color 0.2s;
 }
 
-.post-meta { text-align: right; }
-
-h2, h3, h4, h5, h6 { margin-top: 3rem; }
-
-hr { margin: 2rem 0; }
-
-p { margin: 1rem 0; }
-
-li { margin: 0.4rem 0; }
-
-*:target { background: yellow; }
-
+// ── Container ────────────────────────────────────────────────
 .w {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 3.5rem 2rem;
 }
 
-hr {
-  text-align: center;
-  border: 0;
-
-  &:before { content: '/////' }
-  &:after { content: attr(data-content) '/////' }
+@media (max-width: 600px) {
+  .w { padding: 2rem 1.25rem; }
 }
 
-table { width: 100%; }
-
-table, th, td {
-  border: thin solid black;
-  border-collapse: collapse;
-  padding: 0.4rem;
+// ── Headings ─────────────────────────────────────────────────
+h1, h2, h3, h4, h5, h6 {
+  color: var(--fg);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
+h2, h3, h4, h5, h6 { margin-top: 2.5rem; }
+h2 { font-size: 1.2rem; }
+h3, h4, h5, h6 { font-size: 1rem; }
+
+p { margin: 0 0 1.2rem; }
+
+// ── Links ────────────────────────────────────────────────────
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+a:hover { border-bottom-color: var(--accent); }
+
+// ── Lists ────────────────────────────────────────────────────
+ul, ol {
+  padding-left: 1.5rem;
+  margin: 0 0 1.2rem;
+}
+
+li { margin: 0.35rem 0; }
+
+// ── Code ─────────────────────────────────────────────────────
 code {
-  color: white;
-  background: rgb(127, 127, 127);
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--code-bg);
+  color: var(--fg);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+
+  code {
+    background: none;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: inherit;
+  }
 }
 
 div.highlighter-rouge code {
   display: block;
   overflow-x: auto;
   white-space: pre-wrap;
-  padding: 1rem;
 }
 
+// Override highlight.js default background to match theme tokens
+.hljs {
+  background: var(--code-bg) !important;
+  color: var(--fg);
+}
+
+// ── Blockquote ───────────────────────────────────────────────
 blockquote {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  background: var(--dim);
+  border-radius: 0 4px 4px 0;
+  color: var(--muted);
   font-style: italic;
-  border: thin solid black;
-  padding: 1rem;
 
   p { margin: 0; }
 }
 
+// ── HR — override original "/////" decoration ────────────────
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+
+  &:before { content: none; }
+  &:after  { content: none; }
+}
+
+// ── Tables ───────────────────────────────────────────────────
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+
+// ── Images ───────────────────────────────────────────────────
 img {
   max-width: 100%;
   display: block;
-  margin: 0 auto;
+  margin: 1.5rem auto;
+  border-radius: 4px;
+}
+
+// ── Target highlight ─────────────────────────────────────────
+*:target { background: rgba(255, 240, 70, 0.35); }
+
+// ── Post list (home page) ────────────────────────────────────
+ul.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+
+    &:last-child { border-bottom: none; }
+
+    span {
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      min-width: 6.5rem;
+    }
+
+    a {
+      color: var(--fg);
+      font-size: 0.93rem;
+      border-bottom: none;
+      flex: 1;
+
+      &:hover { color: var(--accent); }
+    }
+  }
+}
+
+// ── Post date meta ───────────────────────────────────────────
+.post-meta {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  margin: 0 0 2.5rem;
+  text-align: left;
+}
+
+// ── Article title ────────────────────────────────────────────
+article > h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 0.4rem;
+}
+
+// ── Home site title ──────────────────────────────────────────
+header > h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 2rem;
+  color: var(--fg);
+}
+
+// ── Back link ────────────────────────────────────────────────
+.back-link {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  border-bottom: none;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    color: var(--accent);
+    border-bottom: none;
+  }
+}
+
+// ── Footer ───────────────────────────────────────────────────
+.site-footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-align: center;
+
+  a {
+    color: var(--muted);
+    border-bottom: none;
+    margin: 0 0.5rem;
+
+    &:hover { color: var(--accent); }
+  }
+
+  p { margin: 0.25rem 0; }
+}
+
+// ── Evidence highlight ───────────────────────────────────────
+.evidence {
+  background: rgba(255, 240, 70, 0.45);
+  color: var(--fg);
+}
+
+// ── EOF / TBC section markers ────────────────────────────────
+.eof, .tbc {
+  position: relative;
+  height: 0;
+  margin: 4rem auto;
+  border-top: 1px solid var(--border);
+
+  &::before {
+    position: absolute;
+    top: -0.55rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+    padding: 0 0.75rem;
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+}
+
+.eof::before { content: "[ E.O.F ]"; }
+.tbc::before { content: "[ T.B.C ]"; }
+
+// ── Scroll reveal ────────────────────────────────────────────
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// ── Terminal / Easter egg elements ───────────────────────────
+
+// Blinking cursor (injected by easter-egg.js or used inline)
+.cursor-blink {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.85em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  margin-left: 0.1em;
+  animation: cursor-blink 1.2s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink { animation: none; opacity: 1; }
+}
+
+// Terminal prompt $ symbol (footer, 404, etc.)
+.prompt {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.85em;
+  user-select: none;
+  margin-right: 0.5rem;
+}
+
+// 404 terminal page
+.terminal-404 {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  margin: 3rem 0;
+
+  p { margin: 0.2rem 0; }
+
+  a {
+    color: var(--accent);
+    border-bottom: none;
+    &:hover { border-bottom: 1px solid var(--accent); }
+  }
+}
+
+.t-prompt { color: var(--fg); }
+.t-output { color: var(--muted); padding-left: 1.5rem; }
+.t-error  { color: var(--accent); font-style: normal; }
+.t-blank  { height: 0.6rem; margin: 0; }
+
+// Konami code glitch effect (3-second flash)
+@keyframes glitch-shift {
+  0%   { transform: translateX(0); filter: none; }
+  20%  { transform: translateX(-3px); filter: hue-rotate(90deg); }
+  40%  { transform: translateX(3px);  filter: hue-rotate(180deg); }
+  60%  { transform: translateX(-2px); filter: hue-rotate(270deg) brightness(1.3); }
+  80%  { transform: translateX(2px);  filter: hue-rotate(45deg); }
+  100% { transform: translateX(0); filter: none; }
+}
+
+body.glitch .w {
+  animation: glitch-shift 0.2s ease-in-out 8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.glitch .w { animation: none; }
 }
