@@ -607,8 +607,6 @@ SELECT create_hypertable('server_metrics', 'ts');
 - 三种窗口模式：滚动（date_trunc）、滑动（RANGE BETWEEN）、会话（LAG + SUM 模拟）
 - 异常检测：Z-Score + 连续 N 次检测，比硬编码阈值健壮得多
 - BRIN 索引：时序数据专属，体积是 B-Tree 的 ~1%
-- 迁移信号：给出了明确的 TimescaleDB 升级判断标准
-
 
 窗口函数是 SQL 里被低估最严重的功能。很多工程师绕了一大圈 Spark DataFrame、Flink DataStream，回头发现想要的结果一条 OVER (ORDER BY ts RANGE BETWEEN ...) 就能给出来。
 
