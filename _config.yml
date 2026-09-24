@@ -29,3 +29,5 @@ plugins:
 
 # theme: no-style-please
 # remote_theme: riggraz/no-style-please
+
+timezone: Asia/Shanghai  # 或者你所在的具体时区
