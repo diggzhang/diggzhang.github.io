@@ -38,41 +38,8 @@
     console.log('%c// https://github.com/diggzhang', mutedStyle);
   } catch (e) {}
 
-  // ── Scroll reveal ─────────────────────────────────────────
-  function initScrollReveal() {
-    if (!window.IntersectionObserver) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var els = document.querySelectorAll(
-      'article > p, article > h2, article > h3, article > h4, ' +
-      'article > pre, article > blockquote, article > ul, article > ol, ' +
-      'ul.post-list > li'
-    );
-    if (!els.length) return;
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
-
-    els.forEach(function (el, i) {
-      el.classList.add('reveal');
-      // Stagger only the post list items on the home page
-      if (el.parentElement && el.parentElement.classList.contains('post-list')) {
-        el.style.transitionDelay = Math.min(i * 35, 280) + 'ms';
-      }
-      observer.observe(el);
-    });
-  }
-
   // ── DOM Easter eggs ───────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
-
-    initScrollReveal();
 
     // Blinking cursor on home page site title
     var siteTitle = document.querySelector('header > h1');

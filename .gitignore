@@ -14,3 +14,9 @@ node_modules/
 bower_components/
 
 .jekyll-cache/
+
+.agents/
+.claude/
+.grok/
+.cursor/
+.pi/

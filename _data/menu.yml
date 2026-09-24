@@ -5,8 +5,6 @@ entries:
   - title: 关于这里
     entries:
       - title: 又一个不怎么更新的博客 :)
-      - title: github repo
-        url: https://github.com/diggzhang
       - title: 总计有 <span id="busuanzi_value_site_pv"></span> 次点击以及 <span id="busuanzi_value_site_uv"></span> 个访客。
 
 
@@ -22,9 +20,6 @@ entries:
   
   - title: 关于我
     entries:
-      - title: 联系方式
-        entries:
-          - title: diggzhang[at]gmail.com
       - title: 最近喜欢什么
         entries:
           - title: BRZ/小丑牌Balatro
