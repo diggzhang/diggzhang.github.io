@@ -1,0 +1,324 @@
+---
+layout:     post
+title:      "Python 执行卡了1小时，最终我杀掉一个 TCP 连接"
+subtitle:   ""
+date:       2026-09-24
+author:     ""
+tags:
+
+---
+
+今天遇到一个很有意思的故障。
+
+服务器上有个LLM Call程序，负责批量处理数据，中间会并发调用中转站 LLM。
+跑着跑着，它突然不动了。
+
+没有报错，没有退出，服务也没挂。
+
+进程还好端端地活着：
+
+```bash
+root  471728  0.1  8.4 6316968 627664 ?  Sl  12:31  0:05 \
+/root/project/llmcall/.venv/bin/python3 \
+app/services/gate_service.py --user Bing
+```
+
+这种问题其实比直接报错更讨厌。
+
+于是我决定一层层往下找。
+
+## 它到底在干什么？
+
+第一眼看 CPU。
+
+```bash
+pidstat -p 471728 1
+```
+
+连续十几秒：
+
+```text
+%usr  %system  %wait  %CPU
+0.00     0.00   0.00  0.00
+0.00     0.00   0.00  0.00
+...
+```
+
+完全不动。
+
+至少可以排除一个方向：它不是陷入死循环。
+
+再看进程状态：
+
+```bash
+cat /proc/471728/status | grep -E 'State|Threads|VmRSS|VmSize'
+```
+
+```text
+State:   S (sleeping)
+VmSize:  6316968 kB
+VmRSS:    627664 kB
+Threads:       24
+```
+
+24 个线程，进程正在睡觉。
+
+那它在等什么？
+
+```bash
+cat /proc/471728/wchan
+```
+
+Linux 回答：
+
+```text
+futex_do_wait
+```
+
+这就有意思了。
+
+主线程正在等某个线程同步条件。可能是锁，可能是 Condition，也可能是 Future。
+
+但这还不能叫死锁。
+
+因为我的程序用了 `ThreadPoolExecutor`，主线程等待 worker，本来就是正常行为。
+
+真正的问题是：
+
+**它在等谁？**
+
+## 24 个线程里，只有一个罪魁祸首
+
+这时候 `py-spy` 非常好用：
+
+```bash
+uv run py-spy dump --pid 471728
+```
+
+主线程的调用栈很快给出了第一个答案：
+
+```text
+MainThread
+    wait
+    wait
+    as_completed
+    gate_on_batch
+```
+
+原来主线程停在：
+
+```python
+as_completed(...)
+```
+
+它正在等线程池里的任务全部完成。
+
+继续往下看。
+
+线程池大约有 20 个 worker，其中 19 个都已经变成：
+
+```text
+ThreadPoolExecutor-10_x
+    _worker
+```
+
+idle。
+
+只有一个线程还在工作：
+
+```text
+ThreadPoolExecutor-10_15
+    read (ssl.py)
+    recv (ssl.py)
+    read (httpcore)
+    _receive_response_headers
+    httpx
+    openai
+    ChatOpenAI
+    invoke
+    chat (client.py:67)
+    run_two_stage_gate
+```
+
+看到这里，事情已经非常清楚了。
+
+不是 Python 死锁。
+
+不是 CPU 卡住。
+
+也不是数据库。
+
+**整个程序都在等一次 LLM 请求的 HTTP Response Header。**
+
+把现场简化一下，大概是这样：
+
+```text
+MainThread
+    │
+    └── as_completed()
+            │
+            ├── Worker 0   ✓
+            ├── Worker 1   ✓
+            ├── ...
+            ├── Worker 14  ✓
+            │
+            ├── Worker 15
+            │      │
+            │      └── ChatOpenAI.invoke()
+            │              ↓
+            │            HTTPX
+            │              ↓
+            │          SSL recv()
+            │              ↓
+            │        等服务器响应……
+            │
+            └── Worker 16~19 ✓
+```
+
+19 个人都下班了。
+
+最后一个人坐在工位上等电话。
+
+而老板 `as_completed()` 坚持：
+
+> 等他回来我们才能走。
+
+于是整个 batch 就这么耗着。
+
+**原来是超时设置没生效**。
+
+回头检查 LLM client：
+
+```python
+self._llm = ChatOpenAI(
+    model=model_name,
+    temperature=temperature,
+    max_tokens=max_tokens,
+    api_key=api_key,
+    base_url=base_url,
+)
+```
+
+没有显式设置 timeout。
+
+外层又恰好在等待全部 Future：
+
+```python
+for future in as_completed(futures):
+    ...
+```
+
+两个设计碰到一起，就形成了一个很经典的故障：
+
+```text
+一个 HTTP 请求长时间不返回
+            ↓
+一个 Future 永远不完成
+            ↓
+as_completed() 一直等
+            ↓
+整个 Batch 一直不结束
+```
+
+从服务器外面看，则是一个非常迷惑的状态：
+
+```text
+Python 活着
+CPU = 0%
+没有异常
+没有退出
+也没有进展
+```
+
+程序不是挂了。
+
+**程序只是愿意一直等。**
+
+## 但我不想杀 Python
+
+定位清楚之后，还有一个现实问题。
+
+这个任务已经跑了很久，前面大量数据都处理完了。
+
+最简单的处理当然是：
+
+```bash
+kill -9 471728
+```
+
+但这相当于为了一个人没下班，把整栋楼的电闸拉了。
+
+我真正想做的是：
+
+> 能不能只让那个卡住的 HTTP 请求失败？
+
+如果 socket 被强制断开，`ssl.recv()` 就应该返回异常。
+
+异常会一路冒泡到 HTTPX、OpenAI SDK 和 LangChain。SDK 可能重试；即使不重试，至少这个 Future 会结束，而不是无限等待。
+
+于是我看了一眼连接：
+
+```bash
+ss -ntp | grep 'pid=471728' | grep ESTAB
+```
+
+除了 PostgreSQL，只剩一条对外 HTTPS：
+
+```text
+172.31.77.XXX:41502 -> XXX.18.3.115:443
+```
+
+大概率就是它。
+
+于是我没有杀进程，也没有尝试杀 Python 线程。
+
+我杀了这条 TCP 连接：
+
+```bash
+ss -K dst XXX.18.3.115 dport = 443 sport = 41502
+```
+
+然后发生了这次故障里最有意思的一幕。
+
+## 程序活了
+
+再看网络连接。
+
+原来的：
+
+```text
+41502 -> XXX.18.3.115:443
+```
+
+消失了。
+
+紧接着出现了一批新的 HTTPS 连接：
+
+```text
+55160 -> xxx.18.2.115:443
+55164 -> xxx.18.2.115:443
+55170 -> xxx.18.2.115:443
+...
+51480 -> xxx.18.3.115:443
+51544 -> xxx.18.3.115:443
+```
+
+程序重新开始跑了。
+
+大概发生了这样一件事：
+
+```text
+卡住的 socket
+      ↓
+ss -K 强制断开
+      ↓
+ssl.read() 返回异常
+      ↓
+HTTP client / SDK 接收到失败
+      ↓
+retry / 当前 Future 结束
+      ↓
+as_completed() 终于可以继续
+      ↓
+下一批任务启动
+```
